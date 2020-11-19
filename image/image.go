@@ -1,4 +1,4 @@
-package minitools
+package image
 
 import (
 	"image"
@@ -15,7 +15,7 @@ import (
 type Img struct {
 	imgPath string
 	file    *os.File
-	img     image.Image
+	im      image.Image
 }
 
 // LoadImg 加载图片
@@ -27,11 +27,11 @@ func (p *Img) LoadImg() (err error) {
 	defer f.Close()
 	// p.file = f
 
-	img, err := jpeg.Decode(f)
+	im, err := jpeg.Decode(f)
 	if err != nil {
 		return
 	}
-	p.img = img
+	p.im = im
 
 	return
 }
@@ -46,8 +46,8 @@ func (p *Img) Close() (err error) {
 
 // GetSize 获取图片的宽和高
 func (p *Img) GetSize() (int, int) {
-	// size := p.img.Bounds().Max
-	size := p.img.Bounds().Size()
+	// size := p.im.Bounds().Max
+	size := p.im.Bounds().Size()
 	return size.X, size.Y
 }
 
@@ -59,7 +59,7 @@ func (p *Img) Save(newPath string) (err error) {
 		return
 	}
 	defer f.Close()
-	jpeg.Encode(f, p.img, &jpeg.Options{100})
+	jpeg.Encode(f, p.im, &jpeg.Options{100})
 
 	return
 }
@@ -71,12 +71,12 @@ func (p *Img) Copy(p1 *Img) (err error) {
 	// 修改像素值
 	for i := 0; i < h; i++ {
 		for j := 0; j < w; j++ {
-			r, g, b, a := p.img.At(j, i).RGBA()
-			// fmt.Println(img.At(j, i))
+			r, g, b, a := p.im.At(j, i).RGBA()
+			// fmt.Println(im.At(j, i))
 			newImg.SetRGBA(j, i, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)})
 		}
 	}
-	p1.img = newImg
+	p1.im = newImg
 
 	return
 }
@@ -88,14 +88,14 @@ func (p *Img) Crop(p1 *Img, r image.Rectangle) (err error) {
 	// 修改像素值
 	for i := 0; i < h; i++ {
 		for j := 0; j < w; j++ {
-			r, g, b, a := p.img.At(j, i).RGBA()
-			// fmt.Println(img.At(j, i))
+			r, g, b, a := p.im.At(j, i).RGBA()
+			// fmt.Println(im.At(j, i))
 			newImg.SetRGBA(j, i, color.RGBA{uint8(r), uint8(g), uint8(b), uint8(a)})
 		}
 	}
 
 	// crop
-	p1.img = newImg.SubImage(r)
+	p1.im = newImg.SubImage(r)
 
 	return
 }

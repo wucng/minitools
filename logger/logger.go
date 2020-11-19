@@ -1,5 +1,4 @@
-// $GOPATH/src/day01/myLoger/myLoger.go
-package minitools
+package logger
 
 import (
 	"errors"
